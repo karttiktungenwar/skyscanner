@@ -62,13 +62,13 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
               children: [
                 Image.network(
                   widget.destination.imageUrl,
-                  height: 320,
+                  height: 270,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
                 Column(
                   children: [
-                    const SizedBox(height: 300), // Overlap by 20dp (320 - 20)
+                    const SizedBox(height: 250), // Overlap by 20dp (320 - 20)
                     Container(
                       decoration: const BoxDecoration(
                         color: Colors.white,
@@ -78,7 +78,7 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                        padding: const EdgeInsets.symmetric(vertical: 5,horizontal: 10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -135,7 +135,7 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
                                           _isDescriptionExpanded.value = !isExpanded;
                                         },
                                         child: Text(
-                                          isExpanded ? 'Read more' : 'Read less',
+                                          isExpanded ? 'Read less' : 'Read more',
                                           style: AppText.linkBold,
                                         ),
                                       ),
@@ -154,6 +154,41 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
                               ],
                             ),
                             const SizedBox(height: 14),
+                            SizedBox(
+                              height: 270,
+                              child: ValueListenableBuilder<Set<String>>(
+                                valueListenable: favoriteDestinationIds,
+                                builder: (context, favorites, _) {
+                                  return ListView.separated(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: tours.length,
+                                    separatorBuilder: (_, _) => const SizedBox(width: 14),
+                                    itemBuilder: (context, index) {
+                                      final tour = tours[index];
+                                      return Container(
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.background,
+                                          borderRadius: BorderRadius.circular(16.0), // Adjust the radius size as needed
+                                        ),
+                                        child: TourCard(
+                                          tour: tour,
+                                          isFavorite: favorites.contains(tour.id),
+                                          onFavoriteTap: () => toggleFavorite(tour.id),
+                                          onTap: () {
+                                            context.push(
+                                              AppRouteNames.tour,
+                                              extra: tour,
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            )
                           ],
                         ),
                       ),
@@ -194,44 +229,6 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
               ],
             ),
           ),
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: 270,
-              child: ValueListenableBuilder<Set<String>>(
-                valueListenable: favoriteDestinationIds,
-                builder: (context, favorites, _) {
-                  return ListView.separated(
-                    padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: tours.length,
-                    separatorBuilder: (_, _) => const SizedBox(width: 14),
-                    itemBuilder: (context, index) {
-                      final tour = tours[index];
-                      return Container(
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: AppColors.surface,
-                          borderRadius: BorderRadius.circular(16.0), // Adjust the radius size as needed
-                        ),
-                        child: TourCard(
-                          tour: tour,
-                          isFavorite: favorites.contains(tour.id),
-                          onFavoriteTap: () => toggleFavorite(tour.id),
-                          onTap: () {
-                            context.push(
-                              AppRouteNames.tour,
-                              extra: tour,
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 24)),
         ],
       ),
     );

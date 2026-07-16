@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:skyscanner/src/core/common/domain/entity/entity_data.dart';
 import 'package:skyscanner/src/core/common/widgets/circle_icon_button.dart';
@@ -79,76 +81,90 @@ class _TourItineraryScreenState extends State<TourItineraryScreen> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ValueListenableBuilder<int>(
-                valueListenable: tourTabIndex,
-                builder: (context, selectedTab, _) {
-                  return SegmentedTabs(
-                    tabs: _tabs,
-                    selectedIndex: selectedTab,
-                    onSelected: (i) => tourTabIndex.value = i,
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 16),
             Expanded(
-              child: ValueListenableBuilder<int>(
-                valueListenable: tourTabIndex,
-                builder: (context, selectedTab, _) {
-                  if (selectedTab != 0) {
-                    return Center(
-                      child: Text(
-                        '${_tabs[selectedTab]} content goes here',
-                        style: AppText.subtitle,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    const BottomSheetHandle(),
+                    const SizedBox(height: 5,),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: ValueListenableBuilder<int>(
+                        valueListenable: tourTabIndex,
+                        builder: (context, selectedTab, _) {
+                          return SegmentedTabs(
+                            tabs: _tabs,
+                            selectedIndex: selectedTab,
+                            onSelected: (i) => tourTabIndex.value = i,
+                          );
+                        },
                       ),
-                    );
-                  }
-                  return SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${widget.tour.days}-Day ${widget.tour.title} Adventure',
-                          style: AppText.sectionTitle,
-                        ),
-                        const SizedBox(height: 16),
-                        ValueListenableBuilder<int?>(
-                          valueListenable: expandedDayIndex,
-                          builder: (context, expandedIndex, _) {
-                            return Column(
-                              children: List.generate(widget.tour.itinerary.length, (index) {
-                                final day = widget.tour.itinerary[index];
-                                return ItineraryDayTile(
-                                  day: day,
-                                  expanded: expandedIndex == index,
-                                  onTap: () => toggleExpandedDay(index),
-                                );
-                              }),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 100),
-                      ],
                     ),
-                  );
-                },
+                    const SizedBox(height: 16),
+                    Expanded(
+                      child: ValueListenableBuilder<int>(
+                        valueListenable: tourTabIndex,
+                        builder: (context, selectedTab, _) {
+                          if (selectedTab != 0) {
+                            return Center(
+                              child: Text(
+                                '${_tabs[selectedTab]} content goes here',
+                                style: AppText.subtitle,
+                              ),
+                            );
+                          }
+                          return SingleChildScrollView(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${widget.tour.days}-Day ${widget.tour.title} Adventure',
+                                  style: AppText.sectionTitle,
+                                ),
+                                const SizedBox(height: 16),
+                                ValueListenableBuilder<int?>(
+                                  valueListenable: expandedDayIndex,
+                                  builder: (context, expandedIndex, _) {
+                                    return Column(
+                                      children: List.generate(widget.tour.itinerary.length, (index) {
+                                        final day = widget.tour.itinerary[index];
+                                        return ItineraryDayTile(
+                                          day: day,
+                                          expanded: expandedIndex == index,
+                                          onTap: () => toggleExpandedDay(index),
+                                        );
+                                      }),
+                                    );
+                                  },
+                                ),
+                                const SizedBox(height: 100),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+            )
           ],
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+        padding: const EdgeInsets.all(10),
         child: SizedBox(
           height: 52,
           child: ElevatedButton(
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Booking flow goes here')),
-              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.pillDark,
@@ -168,3 +184,23 @@ class _TourItineraryScreenState extends State<TourItineraryScreen> {
 }
 
 void _noop() {}
+
+class BottomSheetHandle extends StatelessWidget {
+  const BottomSheetHandle({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.only(top: 12.0, bottom: 8.0),
+        width: 40.0,
+        height: 5.0,
+        decoration: BoxDecoration(
+          // Colors.grey[400] matches the standard Material 3 look
+          color: Colors.grey[400],
+          borderRadius: BorderRadius.circular(2.5),
+        ),
+      ),
+    );
+  }
+}
