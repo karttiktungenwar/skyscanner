@@ -48,29 +48,36 @@ class TourCard extends StatelessWidget {
                         onTap: onFavoriteTap,
                       ),
                     ),
-                    Positioned(
-                      bottom: 10,
-                      right: 10,
-                      child: CircleIconButton(
-                        icon: Icons.arrow_forward_rounded,
-                        background: AppColors.pillDark,
-                        iconColor: Colors.white,
-                        onTap: onTap,
-                      ),
-                    ),
                   ],
                 ),
               ),
             ),
             const SizedBox(height: 10),
-            Text(tour.title, style: AppText.linkBold.copyWith(fontSize: 15)),
-            const SizedBox(height: 4),
-            Text(
-              '${tour.days} days  •  from \$${tour.priceFrom}/person',
-              style: AppText.subtitle,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment:  MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(tour.title, style: AppText.linkBold.copyWith(fontSize: 15)),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${tour.days} days  •  from \$${tour.priceFrom}/person',
+                      style: AppText.subtitle,
+                    ),
+                    const SizedBox(height: 4),
+                    RatingBadge(rating: tour.rating, reviewCount: tour.reviewCount,starColor: AppColors.ink,),
+                  ],
+                ),
+                CircleIconButton(
+                  icon: Icons.arrow_forward_rounded,
+                  background: AppColors.pillDark,
+                  iconColor: Colors.white,
+                  onTap: onTap,
+                )
+              ],
             ),
-            const SizedBox(height: 4),
-            RatingBadge(rating: tour.rating, reviewCount: tour.reviewCount,starColor: AppColors.ink,),
           ],
         ),
       ),

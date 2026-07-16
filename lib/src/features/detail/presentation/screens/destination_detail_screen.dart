@@ -33,6 +33,7 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
   /// Ids of destinations the user has favorite (heart icon toggled on).
   final ValueNotifier<Set<String>> favoriteDestinationIds =
   ValueNotifier<Set<String>>(<String>{});
+  final ValueNotifier<bool> _isDescriptionExpanded = ValueNotifier<bool>(false);
 
   void toggleFavorite(String destinationId) {
     final updated = Set<String>.from(favoriteDestinationIds.value);
@@ -45,6 +46,7 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
   @override
   void dispose() {
     favoriteDestinationIds.dispose();
+    _isDescriptionExpanded.dispose();
     super.dispose();
   }
 
@@ -53,7 +55,7 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: CustomScrollView(
+      body:  CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
             child: Stack(
@@ -63,6 +65,100 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
                   height: 320,
                   width: double.infinity,
                   fit: BoxFit.cover,
+                ),
+                Column(
+                  children: [
+                    const SizedBox(height: 300), // Overlap by 20dp (320 - 20)
+                    Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(widget.destination.city,
+                                    style: AppText.sectionTitle
+                                        .copyWith(fontSize: 24)),
+                                RatingBadge(
+                                  rating: widget.destination.rating,
+                                  starColor: AppColors.ink,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                const Icon(Icons.circle,
+                                    size: 8, color: AppColors.badgeGreen),
+                                const SizedBox(width: 6),
+                                Text(widget.destination.country,
+                                    style: AppText.subtitle),
+                                const Spacer(),
+                                Text(
+                                  '${widget.destination.reviewCount} reviews',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: AppColors.inkSoft,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 14),
+                            ValueListenableBuilder<bool>(
+                              valueListenable: _isDescriptionExpanded,
+                              builder: (context, isExpanded, _) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      widget.destination.description,
+                                      style: AppText.body,
+                                      maxLines: isExpanded ? null : 2,
+                                      overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          // Direct mutation triggers the listenable to notify consumers
+                                          _isDescriptionExpanded.value = !isExpanded;
+                                        },
+                                        child: Text(
+                                          isExpanded ? 'Read more' : 'Read less',
+                                          style: AppText.linkBold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 24),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: const [
+                                Text('Upcoming tours',
+                                    style: AppText.sectionTitle),
+                                Text('See all', style: AppText.linkBold),
+                              ],
+                            ),
+                            const SizedBox(height: 14),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 SafeArea(
                   child: Padding(
@@ -78,11 +174,16 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
                         ValueListenableBuilder<Set<String>>(
                           valueListenable: favoriteDestinationIds,
                           builder: (context, favorites, _) {
-                            final isFav = favorites.contains(widget.destination.id);
+                            final isFav =
+                                favorites.contains(widget.destination.id);
                             return CircleIconButton(
-                              icon: isFav ? Icons.favorite : Icons.favorite_border,
-                              iconColor: isFav ? Colors.redAccent : AppColors.ink,
-                              onTap: () => toggleFavorite(widget.destination.id),
+                              icon: isFav
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              iconColor:
+                                  isFav ? Colors.redAccent : AppColors.ink,
+                              onTap: () =>
+                                  toggleFavorite(widget.destination.id),
                             );
                           },
                         ),
@@ -94,82 +195,35 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(widget.destination.city, style: AppText.sectionTitle.copyWith(fontSize: 24)),
-                      RatingBadge(
-                        rating: widget.destination.rating,
-                        starColor: AppColors.ink,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      const Icon(Icons.circle, size: 8, color: AppColors.badgeGreen),
-                      const SizedBox(width: 6),
-                      Text(widget.destination.country, style: AppText.subtitle),
-                      const Spacer(), // Pushes everything below to the right end
-                      Text(
-                        '${widget.destination.reviewCount} reviews',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: AppColors.inkSoft,
-                          decoration: TextDecoration.underline,
-                        ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(height: 14),
-                  Text(widget.destination.description, style: AppText.body),
-                  const SizedBox(height: 4),
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text('Read more', style: AppText.linkBold),
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text('Upcoming tours', style: AppText.sectionTitle),
-                      Text('See all', style: AppText.linkBold),
-                    ],
-                  ),
-                  const SizedBox(height: 14),
-                ],
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
             child: SizedBox(
-              height: 250,
+              height: 270,
               child: ValueListenableBuilder<Set<String>>(
                 valueListenable: favoriteDestinationIds,
                 builder: (context, favorites, _) {
                   return ListView.separated(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
                     scrollDirection: Axis.horizontal,
                     itemCount: tours.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 14),
+                    separatorBuilder: (_, _) => const SizedBox(width: 14),
                     itemBuilder: (context, index) {
                       final tour = tours[index];
-                      return TourCard(
-                        tour: tour,
-                        isFavorite: favorites.contains(tour.id),
-                        onFavoriteTap: () => toggleFavorite(tour.id),
-                        onTap: () =>
-                        {
-                          context.push(
-                            AppRouteNames.tour,
-                            extra: tour,
-                          ),
-                        },
+                      return Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColors.surface,
+                          borderRadius: BorderRadius.circular(16.0), // Adjust the radius size as needed
+                        ),
+                        child: TourCard(
+                          tour: tour,
+                          isFavorite: favorites.contains(tour.id),
+                          onFavoriteTap: () => toggleFavorite(tour.id),
+                          onTap: () {
+                            context.push(
+                              AppRouteNames.tour,
+                              extra: tour,
+                            );
+                          },
+                        ),
                       );
                     },
                   );

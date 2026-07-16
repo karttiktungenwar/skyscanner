@@ -55,6 +55,10 @@ class DestinationCard extends StatelessWidget {
                 iconColor: isFavorite ? Colors.redAccent : AppColors.ink,
                 onTap: onFavoriteTap,
                 background: AppColors.transparent,
+                border: Border.all(
+                  color: AppColors.surface,
+                  width: 1,
+                ),
               ),
             ),
             Positioned(
@@ -86,29 +90,42 @@ class DestinationCard extends StatelessWidget {
                 height: 44,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: AppColors.transparent, // Customize your container background color
-                    borderRadius: BorderRadius.circular(12), // Adjust corner roundedness
+                    color: AppColors.transparent,// Customize your container background color
+                    borderRadius: BorderRadius.circular(25), // Adjust corner roundedness
                     border: Border.all(
                       color: AppColors.surface, // Optional border
                       width: 1,
                     ),
                   ),
-                  child: ElevatedButton(
-                    onPressed: onSeeMoreTap,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.transparent,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(22),
-                      ),
-                    ),
-                    child: Text(
-                      'See more',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
+                  child: GestureDetector(
+                    onTap: onSeeMoreTap,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        // 1. A spacer matching the width of your icon button
+                        // to keep the text perfectly centered in the Row.
+                        const SizedBox(width: 40), // Adjust this width to match your CircleIconButton size
+
+                        // 2. Centered Text that fills the remaining space
+                        const Expanded(
+                          child: Text(
+                            'See more',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+
+                        // 3. Icon at the end
+                        CircleIconButton(
+                          icon: Icons.arrow_forward_ios_rounded,
+                          onTap: onSeeMoreTap,
+                          iconColor: AppColors.surface,
+                          background: AppColors.ink,
+                        ),
+                      ],
                     ),
                   ),
                 ),

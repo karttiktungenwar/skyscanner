@@ -6,6 +6,7 @@ import 'package:skyscanner/src/core/common/widgets/home_app_bar.dart';
 import 'package:skyscanner/src/core/common/widgets/search_text_field.dart';
 import 'package:skyscanner/src/core/common/data/models/model_data.dart';
 import 'package:skyscanner/src/core/common/domain/entity/entity_data.dart';
+import 'package:skyscanner/src/core/extensions/build_context_extension.dart';
 import 'package:skyscanner/src/features/home/presentation/widgets/app_bottom_nav.dart';
 import 'package:skyscanner/src/features/home/presentation/widgets/category_chip.dart';
 import 'package:skyscanner/src/features/home/presentation/widgets/destination_card.dart';
@@ -61,12 +62,12 @@ class _HomeScreenState extends State<HomeScreen> {
           avatarUrl: 'https://karttiktungenwar.github.io/portfolio/assets/img/my-profile-img.png',
         ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal:5,vertical: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SearchTextField(
-              suffixIcon: Icons.filter_list_rounded,
+              suffixIcon: Icons.filter_alt_rounded,
             ),
             const SizedBox(height: 14),
             ValueListenableBuilder<String>(
@@ -110,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       builder: (context, favorites, _) {
                         return CarouselSlider(
                           options: CarouselOptions(
-                            height: 300, // Adjust height as needed
+                            height: context.screenHeight * 0.5, // 50% of screen height
                             viewportFraction: 0.8, // Width of each card relative to screen
                             enlargeCenterPage: true, // Center card is larger
                             enableInfiniteScroll: false,
