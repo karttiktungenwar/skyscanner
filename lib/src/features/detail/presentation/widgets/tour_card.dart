@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:skyscanner/src/core/common/domain/entity/entity_data.dart';
 import 'package:skyscanner/src/core/common/widgets/circle_icon_button.dart';
@@ -38,7 +39,11 @@ class TourCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.network(tour.imageUrl, fit: BoxFit.cover),
+                    CachedNetworkImage(
+                        imageUrl: tour.imageUrl, fit: BoxFit.cover,
+                      placeholder: (context, url) => CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
                     Positioned(
                       top: 10,
                       right: 10,

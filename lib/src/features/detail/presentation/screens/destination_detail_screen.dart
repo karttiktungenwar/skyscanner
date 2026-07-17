@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skyscanner/src/app/routes/app_route_names.dart';
@@ -60,11 +61,13 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
           SliverToBoxAdapter(
             child: Stack(
               children: [
-                Image.network(
-                  widget.destination.imageUrl,
+                CachedNetworkImage(
+                  imageUrl: widget.destination.imageUrl,
                   height: 270,
                   width: double.infinity,
                   fit: BoxFit.cover,
+                  placeholder: (context, url) => CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
                 Column(
                   children: [

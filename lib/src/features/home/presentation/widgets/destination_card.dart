@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:skyscanner/src/core/constants/theme.dart';
 import 'package:skyscanner/src/core/common/domain/entity/entity_data.dart';
@@ -32,7 +33,10 @@ class DestinationCard extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Image.network(destination.imageUrl, fit: BoxFit.cover),
+            CachedNetworkImage(placeholder: (context, url) => CircularProgressIndicator(),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+                fit: BoxFit.cover, imageUrl: destination.imageUrl,
+            ),
             // Gradient so the white text stays readable over the photo.
             DecoratedBox(
               decoration: BoxDecoration(

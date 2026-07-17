@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:skyscanner/src/core/common/domain/entity/entity_data.dart';
 import 'package:skyscanner/src/core/constants/theme.dart';
@@ -38,11 +39,13 @@ class ItineraryDayTile extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      day.imageUrl,
+                    child: CachedNetworkImage(
+                      imageUrl: day.imageUrl,
                       width: 56,
                       height: 56,
                       fit: BoxFit.cover,
+                      placeholder: (context, url) => CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
                   ),
                   const SizedBox(width: 12),
