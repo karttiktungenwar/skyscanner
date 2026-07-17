@@ -1,11 +1,9 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:skyscanner/src/core/common/domain/entity/entity_data.dart';
 import 'package:skyscanner/src/core/common/widgets/circle_icon_button.dart';
 import 'package:skyscanner/src/core/constants/theme.dart';
-import 'package:skyscanner/src/features/detail/presentation/widgets/itinerary_day_tile.dart';
 import 'package:skyscanner/src/features/tour/presentation/widgets/segmented_tabs.dart';
+import 'package:skyscanner/src/features/tour/presentation/widgets/tour_schedule.dart';
 
 
 /// Screen 3: full tour detail with a "Tour schedule / Accommodation /
@@ -19,6 +17,7 @@ class TourItineraryScreen extends StatefulWidget {
     required this.tour,
   });
 
+  @override
   State<TourItineraryScreen> createState() => _TourItineraryScreenState();
 
 }
@@ -37,11 +36,11 @@ class _TourItineraryScreenState extends State<TourItineraryScreen> {
   }
 
   final tourTabIndex = ValueNotifier<int>(0);
-  final expandedDayIndex = ValueNotifier<int?>(0);
 
-  void toggleExpandedDay(int index) {
-    expandedDayIndex.value =
-    expandedDayIndex.value == index ? null : index;
+  @override
+  void dispose() {
+    tourTabIndex.dispose();
+    super.dispose();
   }
 
   @override
@@ -112,6 +111,7 @@ class _TourItineraryScreenState extends State<TourItineraryScreen> {
                       child: ValueListenableBuilder<int>(
                         valueListenable: tourTabIndex,
                         builder: (context, selectedTab, _) {
+                          //Tab Changes here
                           if (selectedTab != 0) {
                             return Center(
                               child: Text(
@@ -120,35 +120,7 @@ class _TourItineraryScreenState extends State<TourItineraryScreen> {
                               ),
                             );
                           }
-                          return SingleChildScrollView(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${widget.tour.days}-Day ${widget.tour.title} Adventure',
-                                  style: AppText.sectionTitle,
-                                ),
-                                const SizedBox(height: 16),
-                                ValueListenableBuilder<int?>(
-                                  valueListenable: expandedDayIndex,
-                                  builder: (context, expandedIndex, _) {
-                                    return Column(
-                                      children: List.generate(widget.tour.itinerary.length, (index) {
-                                        final day = widget.tour.itinerary[index];
-                                        return ItineraryDayTile(
-                                          day: day,
-                                          expanded: expandedIndex == index,
-                                          onTap: () => toggleExpandedDay(index),
-                                        );
-                                      }),
-                                    );
-                                  },
-                                ),
-                                const SizedBox(height: 100),
-                              ],
-                            ),
-                          );
+                          return TourSchedule(tour: widget.tour,);
                         },
                       ),
                     ),
