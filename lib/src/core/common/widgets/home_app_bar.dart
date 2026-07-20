@@ -1,5 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:skyscanner/src/core/constants/theme.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -38,9 +38,9 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
         if (avatarUrl != null)
           CircleAvatar(
             radius: avatarRadius,
-            backgroundImage: NetworkImage(avatarUrl!),
+            backgroundImage: CachedNetworkImageProvider(avatarUrl!),
           ),
-        if (action != null) action!,
+        ?action,
         const SizedBox(width: 16),
       ],
     );

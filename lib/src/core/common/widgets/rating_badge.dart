@@ -55,7 +55,7 @@ class RatingBadge extends StatelessWidget {
             '$reviewCount reviews',
             style: TextStyle(
               fontSize: 12,
-              color: textColor.withOpacity(0.7),
+              color: textColor.withValues(alpha: 0.7),
               decoration: TextDecoration.underline,
             ),
           ),

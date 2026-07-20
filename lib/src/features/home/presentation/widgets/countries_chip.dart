@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter/material.dart';
-
 class CountriesChip extends StatelessWidget {
   final String label;
   final bool isSelected;
